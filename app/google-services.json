@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "617068795187",
+    "firebase_url": "https://shop-31537.firebaseio.com",
+    "project_id": "shop-31537",
+    "storage_bucket": "shop-31537.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:617068795187:android:cb00b00756a20ff2",
+        "android_client_info": {
+          "package_name": "ute.com.shop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "617068795187-cq324vor34ac4njbvfl2intkfp9r9j09.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ute.com.shop",
+            "certificate_hash": "f882eb321f8c7373fdc1accbfb766f7db732cca3"
+          }
+        },
+        {
+          "client_id": "617068795187-26riistv2hhvf1fbv1k0dtbsjbbjk5pe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEizLnVhu0CWB5rF_EmbcJ4Q66nz1p3wg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "617068795187-26riistv2hhvf1fbv1k0dtbsjbbjk5pe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
