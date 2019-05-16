@@ -33,6 +33,8 @@ class MainActivity : AppCompatActivity() {
         "Camera",
         "Invite friend",
         "parking",
+        "Movie",
+        "Bus",
         "download coupons",
         "news",
         "Maps"
@@ -105,6 +107,9 @@ class MainActivity : AppCompatActivity() {
         Log.i(TAG, "position: ${position}")
         when (position) {
             1 -> startActivity(Intent(this, ContactActivity::class.java))
+            2 -> startActivity(Intent(this, ParkintActivity::class.java))
+            3 -> startActivity(Intent(this, MovieActivity::class.java))
+            4 -> startActivity(Intent(this, BusActivity::class.java))
 
 
         }
