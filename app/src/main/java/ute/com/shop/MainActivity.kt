@@ -1,7 +1,10 @@
 package ute.com.shop
 
 import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.renderscript.Sampler
 import android.util.Log
@@ -18,10 +21,16 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.raw_function.view.*
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.toast
+import java.net.URL
 
 class MainActivity : AppCompatActivity() {
     val TAG = "see"
@@ -39,6 +48,8 @@ class MainActivity : AppCompatActivity() {
         "news",
         "Maps"
     )
+
+    var cacheService: Intent? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,6 +91,12 @@ class MainActivity : AppCompatActivity() {
         recycler.adapter = FunctionAdapter()
     }
 
+    override fun onStart() {
+        super.onStart()
+        val filter = IntentFilter(CacheService.ACTION_CACHE_DONE)
+        registerReceiver(broadcastReceiver, filter)
+    }
+
     inner class FunctionAdapter() : RecyclerView.Adapter<FunctionHolder>() {
         //inner Class 可使用外部CLASS參數
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FunctionHolder {
@@ -110,6 +127,7 @@ class MainActivity : AppCompatActivity() {
             2 -> startActivity(Intent(this, ParkintActivity::class.java))
             3 -> startActivity(Intent(this, MovieActivity::class.java))
             4 -> startActivity(Intent(this, BusActivity::class.java))
+            6 -> startActivity(Intent(this, NewsActivity::class.java))
 
 
         }
@@ -166,10 +184,24 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onStop() {
+        super.onStop()
+//        stopService(cacheService)
+        unregisterReceiver(broadcastReceiver)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
+    }
+
+    val broadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action.equals(CacheService.ACTION_CACHE_DONE)) {
+                toast("MainActivity cache informed")
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -178,6 +210,44 @@ class MainActivity : AppCompatActivity() {
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> true
+            R.id.action_cache -> {
+                doAsync {
+                    //                    cacheService = Intent(this, CacheService::class.java)
+/*
+                startService(cacheService)
+                startService(Intent(this, CacheService::class.java))//多重使用，排隊執行
+                startService(Intent(this, CacheService::class.java))//多重使用，排隊執行
+*/
+
+                    val url = URL("https://api.myjson.com/bins/ccope")
+                    val json = url.readText()
+                    val movies = Gson().fromJson<List<Movie>>(
+                        json,
+                        object : TypeToken<List<Movie>>() {}.type
+                    )
+
+                    val movie = movies.get(0)
+
+/*
+                val intent = Intent(this, CacheService::class.java)
+                intent.putExtra("TITLE", movie.Title)
+                intent.putExtra("URL", movie.Poster)
+                startService(intent)//多重使用，排隊執行
+*/
+                    startService(
+                        intentFor<CacheService>(//簡化intent putExtra
+                            "TITLE" to movie.Title,
+                            "URL" to movie.Poster
+                        )
+                    )//多重使用，排隊執行
+
+
+                }
+
+
+
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

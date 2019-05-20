@@ -6,4 +6,9 @@
           android:title="@string/action_settings"
           android:orderInCategory="100"
           app:showAsAction="never"/>
+    <item
+            android:title="Cache"
+            android:id="@+id/action_cache"
+            android:icon="@android:drawable/btn_star_big_on"
+            app:showAsAction="ifRoom"/>
 </menu>
